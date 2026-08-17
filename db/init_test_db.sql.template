@@ -1,0 +1,1 @@
+GRANT TRUNCATE ON TABLE telemetry TO :"db_user";

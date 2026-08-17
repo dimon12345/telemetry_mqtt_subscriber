@@ -1,0 +1,17 @@
+{
+    "mqtt": {
+        "client_id": "mqtt_subscriber",
+        "server_uri": "tcp://localhost:1883",
+        "password": "password",
+        "port": 1883,
+        "topic": "house/#",
+        "user": "mqtt_subscriber"
+    },
+    "postgres": {
+        "dbname": "telemetry",
+        "host": "localhost",
+        "password": "password",
+        "port": 5432,
+        "user": "telemetry"
+    }
+}

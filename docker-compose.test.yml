@@ -1,0 +1,48 @@
+services:
+  test_mqtt:
+    image: eclipse-mosquitto:2
+    container_name: test_mosquitto
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/passwords:/mosquitto/auth/passwords:ro
+      - ./mosquitto/acl:/mosquitto/auth/acl:ro
+
+  test_db:
+    image: postgres:15-alpine
+    container_name: test_postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=telemetry_test
+    volumes:
+      - ./db/init-user-test-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - ./db/init_db.sql.template:/docker-entrypoint-initdb.d/init_db.sql.template
+      - ./db/init_test_db.sql.template:/docker-entrypoint-initdb.d/init_test_db.sql.template
+      - pgdata_test:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telemetry -d telemetry_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  bench_runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: cpp_test_runner
+    volumes:
+      - ./config.json:/telemetry/config.json:ro
+    env_file:
+      - .env
+    environment:
+      - MQTT_HOST=test_mqtt
+      - POSTGRES_HOST=test_db
+    depends_on:
+      test_mqtt:
+        condition: service_started
+      test_db:
+        condition: service_healthy
+
+volumes:
+  pgdata_test:

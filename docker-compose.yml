@@ -1,0 +1,48 @@
+services:
+  mqtt_broker:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/passwords:/mosquitto/auth/passwords:ro
+      - ./mosquitto/acl:/mosquitto/auth/acl:ro
+
+  postgres_server:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./db/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - ./db/init_db.sql.template:/docker-entrypoint-initdb.d/init_db.sql.template
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telemetry -d telemetry"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mqtt_subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mqtt_subscriber
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/telemetry/config.json:ro
+    env_file:
+      - .env
+    depends_on:
+      mqtt_broker:
+        condition: service_started
+      postgres_server:
+        condition: service_healthy
+
+volumes:
+  pgdata:

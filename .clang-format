@@ -1,0 +1,7 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+ContinuationIndentWidth: 8
+AlignOperands: DontAlign
+AlignAfterOpenBracket: DontAlign
+AccessModifierOffset: -4
