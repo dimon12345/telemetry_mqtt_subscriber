@@ -1,0 +1,9 @@
+{
+    "mqtt": {
+        "hostname": "mqtt-host",
+        "port": 1883
+    },
+    "pg": {
+        "hostname": "pg-host"
+    }
+}
