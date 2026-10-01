@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/opt/telemetry/mqtt_subscriber/build/mqtt_subscriber -c /opt/telemetry/config/mqtt.json
+ExecStart=/opt/telemetry/mqtt_subscriber/build/mqtt_subscriber -v -c /opt/telemetry/config/mqtt.json
 KillSignal=SIGINT
 
 [Install]
