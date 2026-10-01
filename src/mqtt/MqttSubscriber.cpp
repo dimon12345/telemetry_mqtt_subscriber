@@ -49,8 +49,6 @@ void MqttSubscriber::start() {
         std::cout << "Subscription active. Wait for messages (press Ctrl-C "
                      "to exit)..." << std::endl;
 
-        client_->subscribe("test", 0);
-
     } catch (const mqtt::exception &exc) {
         std::string reason = exc.get_message();
         std::string message = std::string(exc.what()) + " [" + reason + "]";
@@ -77,6 +75,10 @@ void MqttSubscriber::stop() {
 void MqttSubscriber::subscribe(std::weak_ptr<MqttMessageConsumer> subscriber) {
     std::lock_guard<std::mutex> lock(subscribers_mutex_);
     subscribers_.push_back(subscriber);
+}
+
+void MqttSubscriber::connected(const std::string &cause) {
+    client_->subscribe("test", 0);
 }
 
 void MqttSubscriber::message_arrived(mqtt::const_message_ptr msg) {
