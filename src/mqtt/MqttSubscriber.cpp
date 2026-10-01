@@ -30,11 +30,13 @@ void MqttSubscriber::start() {
         client_ = std::make_unique<mqtt::async_client>(server_address, config_.mqtt_client_id);
         client_->set_callback(*this);
 
-        mqtt::connect_options connOpts;
-        connOpts.set_keep_alive_interval(20);
-        connOpts.set_clean_session(true);
-        connOpts.set_user_name("lexx");
-        connOpts.set_password("xev");
+        auto connOpts = mqtt::connect_options_builder()
+                .clean_session(true)
+                .keep_alive_interval(20)
+                .automatic_reconnect(true)
+                .user_name("lexx")
+                .password("xev")
+                .finalize();
 
         std::cout << "Connect to MQTT broker [" << server_address <<
                   "] ..." << std::endl;
