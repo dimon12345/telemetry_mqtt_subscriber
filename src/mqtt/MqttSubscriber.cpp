@@ -1,3 +1,4 @@
+#include <chrono>
 #include <sstream>
 
 #include "mqtt/async_client.h"
@@ -32,7 +33,7 @@ void MqttSubscriber::start() {
 
         auto connOpts = mqtt::connect_options_builder()
                 .clean_session(true)
-                .keep_alive_interval(20)
+                .keep_alive_interval(std::chrono::seconds(20))
                 .automatic_reconnect(true)
                 .user_name("lexx")
                 .password("xev")
