@@ -4,7 +4,7 @@ set -ex
 echo "Deploy MQTT subscriber"
 cd "$(dirname "$(readlink -f "$0")")"
 
-DISABLE_START_SUBSCRIBER=1 ./build.sh
+DISABLE_BENCHMARK_TEST=1 DISABLE_START_SUBSCRIBER=1 ./build.sh
 
 SERVICE_NAME="telemetry_mqtt.service"
 SERVICE_ETC_FILENAME="/etc/systemd/system/$SERVICE_NAME"
