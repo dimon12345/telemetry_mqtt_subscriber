@@ -14,7 +14,7 @@ struct Config {
     unsigned int mqtt_port = 1883;
     std::string mqtt_client_id = "mqtt_subscriber";
     std::string mqtt_topic = "test";
-    int mqtt_qos = 0;
+    int mqtt_qos = 1;
 
     // PostgreSQL
     std::string pg_dbname = "telemetry";
