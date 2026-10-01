@@ -6,7 +6,7 @@
 
 #include <pqxx/pqxx>
 
-#include "MqttMessageConsumer.h"
+#include "../MqttMessageConsumer.h"
 
 class PostgreSqlConsumer : public MqttMessageConsumer {
 public:

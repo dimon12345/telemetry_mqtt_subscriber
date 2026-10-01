@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "app/Config.h"
+#include "Config.h"
 #include "PostgreSqlConsumer.h"
 
 PostgreSqlConsumer::PostgreSqlConsumer(const Config &config) : config_(config) {
@@ -10,11 +10,15 @@ PostgreSqlConsumer::PostgreSqlConsumer(const Config &config) : config_(config) {
 }
 
 void PostgreSqlConsumer::createConnection() {
+    if (config_.verbose) {
+        std::cout << "Connect to PostgreSql..." << std::endl;
+    }
+
     std::string connection_string =
-            "user=" + config_.pg_user() +
-            " password=" + config_.pg_password() +
-            " host=" + config_.pg_host() +
-            " dbname=" + config_.pg_dbname();
+            "user=" + config_.pg_user +
+            " password=" + config_.pg_password +
+            " host=" + config_.pg_host +
+            " dbname=" + config_.pg_dbname;
     connection_ = std::make_unique<pqxx::connection>(connection_string);
 }
 
@@ -57,7 +61,8 @@ int PostgreSqlConsumer::getSensorId(const std::string &sensor_name) {
     if (r.empty()) {
         return addSensorName(sensor_name);
     }
-    return r.begin()["name_id"].as<int>();
+//    return r.begin()["name_id"].as<int>();
+    return r[0]["name_id"].as<int>();
 }
 
 int PostgreSqlConsumer::addSensorName(const std::string &sensor_name) {

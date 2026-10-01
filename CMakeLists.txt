@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(mqtt_subscriber CXX)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(PahoMqttCpp REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -10,11 +10,11 @@ pkg_check_modules(PQXX REQUIRED IMPORTED_TARGET libpqxx)
 
 add_executable(mqtt_subscriber
     src/main.cpp
-    src/app/Config.cpp
-    src/app/CtrlCHandler.cpp
-    src/mqtt/ConsoleOutputConsumer.cpp
+    src/app/ArgParseConfig.cpp
+    src/app/SignalManager.cpp
     src/mqtt/MqttSubscriber.cpp
-    src/mqtt/PostgreSqlConsumer.cpp
+    src/mqtt/consumers/PostgreSqlConsumer.cpp
+    src/mqtt/consumers/ConsoleOutputConsumer.cpp
 )
 
 target_link_libraries(mqtt_subscriber PRIVATE PkgConfig::PQXX)
