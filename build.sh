@@ -14,8 +14,14 @@ fi
 
 cmake --build build
 
-if [ -n "$DISABLE_POSTGRESQL" ] && [ "DISABLE_POSTGRESQL" != "0" ]; then
+if [ -n "$DISABLE_POSTGRESQL" ] && [ "$DISABLE_POSTGRESQL" != "0" ]; then
     DISABLE_POSTGRESQL_FLAGS=--disable-postgresql
 fi
 
-build/mqtt_subscriber -v ${DISABLE_POSTGRESQL_FLAGS}
+if [ -z "$DISABLE_BENCHMARK_TEST" ] || [ "$DISABLE_BENCHMARK_TEST" == "0" ]; then
+    build/bench || true
+fi
+
+if [ -z "$DISABLE_START_SUBSCRIBER" ] || [ "$DISABLE_START_SUBSCRIBER" == "0" ]; then
+    build/mqtt_subscriber -v ${DISABLE_POSTGRESQL_FLAGS}
+fi

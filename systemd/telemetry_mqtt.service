@@ -1,0 +1,11 @@
+[Unit]
+Description=Telemetry MQTT subscriber
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/opt/telemetry/mqtt_subscriber/build/mqtt_subscriber -c /opt/telemetry/config/mqtt.json
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
