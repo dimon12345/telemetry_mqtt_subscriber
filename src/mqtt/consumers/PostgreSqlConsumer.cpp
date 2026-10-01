@@ -44,7 +44,7 @@ void PostgreSqlConsumer::onMessageArrived(const MqttMessage &message) {
             "VALUES($1, $2, NOW())";
 
     pqxx::work txn(*connection_);
-    txn.exec_params(insert_query, sensor_id, value);
+    txn.exec(insert_query, pqxx::params{sensor_id, value});
     txn.commit();
 }
 
@@ -55,21 +55,20 @@ int PostgreSqlConsumer::getSensorId(const std::string &sensor_name) {
     }
 
     pqxx::work txn(*connection_);
-    pqxx::result r = txn.exec_params(
-            "SELECT * FROM names where name = $1;", sensor_name);
+    pqxx::result r = txn.exec(
+            "SELECT * FROM names where name = $1;", pqxx::params{sensor_name});
     txn.commit();
     if (r.empty()) {
         return addSensorName(sensor_name);
     }
-//    return r.begin()["name_id"].as<int>();
     return r[0]["name_id"].as<int>();
 }
 
 int PostgreSqlConsumer::addSensorName(const std::string &sensor_name) {
     pqxx::work txn(*connection_);
-    pqxx::result r = txn.exec_params(
+    pqxx::result r = txn.exec(
             "INSERT INTO names (name) VALUES ($1) RETURNING name_id;",
-            sensor_name);
+            pqxx::params{sensor_name});
     txn.commit();
     int name_id = r[0][0].as<int>();
     names_[sensor_name] = name_id;
