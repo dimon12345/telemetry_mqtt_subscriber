@@ -1,3 +1,4 @@
+#include <chrono>
 #include <sstream>
 
 #include "mqtt/async_client.h"
@@ -30,11 +31,13 @@ void MqttSubscriber::start() {
         client_ = std::make_unique<mqtt::async_client>(server_address, config_.mqtt_client_id);
         client_->set_callback(*this);
 
-        mqtt::connect_options connOpts;
-        connOpts.set_keep_alive_interval(20);
-        connOpts.set_clean_session(true);
-        connOpts.set_user_name("lexx");
-        connOpts.set_password("xev");
+        auto connOpts = mqtt::connect_options_builder()
+                .clean_session(true)
+                .keep_alive_interval(std::chrono::seconds(20))
+                .automatic_reconnect(true)
+                .user_name("lexx")
+                .password("xev")
+                .finalize();
 
         std::cout << "Connect to MQTT broker [" << server_address <<
                   "] ..." << std::endl;
@@ -45,8 +48,6 @@ void MqttSubscriber::start() {
         client_->subscribe(config_.mqtt_topic, config_.mqtt_qos)->wait();
         std::cout << "Subscription active. Wait for messages (press Ctrl-C "
                      "to exit)..." << std::endl;
-
-        client_->subscribe("test", 0);
 
     } catch (const mqtt::exception &exc) {
         std::string reason = exc.get_message();
@@ -74,6 +75,10 @@ void MqttSubscriber::stop() {
 void MqttSubscriber::subscribe(std::weak_ptr<MqttMessageConsumer> subscriber) {
     std::lock_guard<std::mutex> lock(subscribers_mutex_);
     subscribers_.push_back(subscriber);
+}
+
+void MqttSubscriber::connected(const std::string &cause) {
+    client_->subscribe("test", 0);
 }
 
 void MqttSubscriber::message_arrived(mqtt::const_message_ptr msg) {

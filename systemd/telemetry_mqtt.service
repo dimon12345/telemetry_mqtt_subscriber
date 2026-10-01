@@ -1,0 +1,13 @@
+[Unit]
+Description=Telemetry MQTT subscriber
+After=mosquitto.service postgresql.service
+Requires=mosquitto.service postgresql.service
+
+[Service]
+Type=idle
+ExecStart=/opt/telemetry/mqtt_subscriber/build/mqtt_subscriber -v -c /opt/telemetry/config/mqtt.json
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

@@ -20,6 +20,7 @@ public:
     void start();
     void stop();
 
+    void connected(const std::string &cause) override;
     void message_arrived(mqtt::const_message_ptr msg) override;
 
 private:
