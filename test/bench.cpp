@@ -96,6 +96,6 @@ BENCHMARK_DEFINE_F(MqttSingleConnFixture, SendViaSingleConnection)(benchmark::St
 BENCHMARK_REGISTER_F(MqttSingleConnFixture, SendViaSingleConnection)
     ->Arg(10)
     ->Unit(benchmark::kMillisecond)
-    ->Iterations(5); // Сделаем 5 итераций для более точного среднего значения
+    ->Iterations(10);
 
 BENCHMARK_MAIN();
