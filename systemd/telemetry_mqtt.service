@@ -1,6 +1,7 @@
 [Unit]
 Description=Telemetry MQTT subscriber
-After=multi-user.target
+After=mosquitto.service
+Requires=mosquitto.service
 
 [Service]
 Type=idle
