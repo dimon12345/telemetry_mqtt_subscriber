@@ -2,12 +2,14 @@ cmake_minimum_required(VERSION 3.14)
 
 project(mqtt_subscriber CXX)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(PahoMqttCpp REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(PostgreSQL REQUIRED)
+
 
 pkg_check_modules(PQXX REQUIRED IMPORTED_TARGET libpqxx)
-
 
 include(FetchContent)
 FetchContent_Declare(
@@ -26,18 +28,23 @@ set(COMMON_SOURCES
     src/mqtt/consumers/ConsoleOutputConsumer.cpp
 )
 
+set(COMMON_HEADERS
+    src
+    ${PostgreSQL_INCLUDE_DIRS}
+)
+
 add_executable(mqtt_subscriber
     src/main.cpp
     src/app/ArgParseConfig.cpp
     ${COMMON_SOURCES}
 )
 
-target_link_libraries(mqtt_subscriber PRIVATE PkgConfig::PQXX)
+target_link_libraries(mqtt_subscriber PRIVATE pqxx pq)
 target_link_libraries(mqtt_subscriber PRIVATE PahoMqttCpp::paho-mqttpp3)
 
 target_include_directories(mqtt_subscriber PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/include
-    src
+    ${COMMON_HEADERS}
 )
 
 add_executable(bench
@@ -45,9 +52,9 @@ add_executable(bench
     ${COMMON_SOURCES}
 )
 target_link_libraries(bench PRIVATE benchmark::benchmark_main)
-target_link_libraries(bench PRIVATE PkgConfig::PQXX)
+target_link_libraries(bench PRIVATE pqxx pq)
 target_link_libraries(bench PRIVATE PahoMqttCpp::paho-mqttpp3)
 
 target_include_directories(bench PRIVATE
-    src
+    ${COMMON_HEADERS}
 )

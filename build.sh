@@ -2,6 +2,8 @@
 
 set -ex
 
+cd "$(dirname "$(readlink -f "$0")")"
+
 mkdir -p build
 
 MACOS_CMAKE_FLAGS="-DCMAKE_CXX_COMPILER=clang++-mp-18 -DCMAKE_PREFIX_PATH=/usr/local"
@@ -12,7 +14,7 @@ else
     cmake -B build
 fi
 
-cmake --build build
+cmake --build build -v
 
 if [ -n "$DISABLE_POSTGRESQL" ] && [ "$DISABLE_POSTGRESQL" != "0" ]; then
     DISABLE_POSTGRESQL_FLAGS=--disable-postgresql
