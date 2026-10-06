@@ -9,6 +9,6 @@ while true; do
         printf "%.2f", val
     }')
     echo "send T value $VALUE_T"
-    mosquitto_pub -h mqtt-host -p 1883 -u "lexx" -P "xev" -t "test" -m "sensor dht22#3#T $VALUE_T"
+    mosquitto_pub -h mqtt-host -p 1883 -u "lexx" -P "xev" -t "telemetry" -m "sensor dht22#3#T $VALUE_T"
     sleep 60
 done

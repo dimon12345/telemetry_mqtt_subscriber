@@ -1,7 +1,8 @@
 {
     "mqtt": {
         "hostname": "mqtt-host",
-        "port": 1883
+        "port": 1883,
+        "topic": "telemetry"
     },
     "pg": {
         "hostname": "pg-host"

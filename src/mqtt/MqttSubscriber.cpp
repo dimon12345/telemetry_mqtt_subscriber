@@ -78,10 +78,11 @@ void MqttSubscriber::subscribe(std::weak_ptr<MqttMessageConsumer> subscriber) {
 }
 
 void MqttSubscriber::connected(const std::string &cause) {
-    client_->subscribe("test", 0);
+    client_->subscribe(config_.mqtt_topic, 0);
 }
 
 void MqttSubscriber::message_arrived(mqtt::const_message_ptr msg) {
+    std::cout << "message arrived: " << msg->to_string() << std::endl;
     MqttMessage message;
     message.topic = msg->get_topic();
     message.text_fields = mapStringToFields(msg->to_string());

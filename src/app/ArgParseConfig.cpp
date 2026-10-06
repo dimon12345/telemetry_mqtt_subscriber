@@ -44,11 +44,13 @@ ArgParseConfig::ArgParseConfig(int argc, char **argv) {
 
     // MQTT
     nlohmann::json config = nlohmann::json::parse(file);
-    mqtt_host = config["mqtt"]["hostname"];
-    mqtt_port = config["mqtt"]["port"];
+    auto &mqtt_config = config["mqtt"];
+    mqtt_host = mqtt_config["hostname"];
+    mqtt_port = mqtt_config["port"];
     if (mqtt_port > std::numeric_limits<unsigned short>::max()) {
         throw std::runtime_error("Wrong port number: " + std::to_string(mqtt_port));
     }
+    mqtt_topic = mqtt_config["topic"];
 
     // PostgreSQL
     if (!pg_disabled) {
