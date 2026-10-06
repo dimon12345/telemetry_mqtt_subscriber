@@ -11,7 +11,7 @@
 
 class MqttSubscriber : public mqtt::callback {
 public:
-    MqttSubscriber(const class Config &config)
+    MqttSubscriber(const class ConfigOld &config)
             : config_(config) { std::cout << "MqttSubscriber constructor" << std::endl;};
     ~MqttSubscriber() { std::cout << "MqttSubscriber destructor" << std::endl;};
 
@@ -24,7 +24,7 @@ public:
     void message_arrived(mqtt::const_message_ptr msg) override;
 
 private:
-    const class Config &config_;
+    const class ConfigOld &config_;
     std::unique_ptr<mqtt::async_client> client_;
 
     std::vector<std::weak_ptr<MqttMessageConsumer> > subscribers_;

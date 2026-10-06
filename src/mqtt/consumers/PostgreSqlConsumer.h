@@ -10,11 +10,11 @@
 
 class PostgreSqlConsumer : public MqttMessageConsumer {
 public:
-    PostgreSqlConsumer(const class Config &config);
+    PostgreSqlConsumer(const class ConfigOld &config);
     void onMessageArrived(const MqttMessage &message);
 
 private:
-    const class Config &config_;
+    const class ConfigOld &config_;
     std::unique_ptr<pqxx::connection> connection_;
     std::map<std::string, int> names_;
 

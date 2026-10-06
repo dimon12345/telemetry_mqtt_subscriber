@@ -6,7 +6,7 @@
 #include <thread>
 #include <memory>
 
-#include "Config.h"
+#include "ConfigOld.h"
 #include "mqtt/MqttSubscriber.h"
 #include "mqtt/consumers/PostgreSqlConsumer.h"
 
@@ -28,7 +28,7 @@ long long get_db_row_count(pqxx::connection& conn) {
 
 class MqttSingleConnFixture : public benchmark::Fixture {
 public:
-    std::unique_ptr<Config> config;
+    std::unique_ptr<ConfigOld> config;
     std::unique_ptr<MqttSubscriber> server;
     std::shared_ptr<MqttMessageConsumer> pg_consumer;
     std::unique_ptr<pqxx::connection> db_conn;
@@ -36,7 +36,7 @@ public:
 
     void SetUp(const ::benchmark::State& state) override {
         if (!config) {
-            config = std::make_unique<Config>();
+            config = std::make_unique<ConfigOld>();
             config->pg_dbname = DB_NAME;
             config->mqtt_topic = TEST_TOPIC;
             config->mqtt_qos = MQTT_QOS;

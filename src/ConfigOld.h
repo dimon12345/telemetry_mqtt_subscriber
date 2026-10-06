@@ -2,7 +2,7 @@
 
 #include <string>
 
-struct Config {
+struct [[deprecated]] ConfigOld {
     static constexpr bool DefaultVerboseFlag = false;
     static constexpr bool DefaultDisablePostgreSql = false;
 

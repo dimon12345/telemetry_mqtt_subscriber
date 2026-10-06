@@ -4,7 +4,7 @@
 #include <argparse.hpp>
 #include <nlohmann/json.hpp>
 
-#include "ArgParseConfig.h"
+#include "ArgParseConfigOld.h"
 
 namespace {
     const std::string AppName = "Event monitor";
@@ -15,11 +15,11 @@ namespace {
                 .default_value(DefaultConfigFilename)
                 .help("config.json filename");
         program.add_argument("-p", "--disable-postgresql")
-                .default_value(Config::DefaultDisablePostgreSql)
+                .default_value(ConfigOld::DefaultDisablePostgreSql)
                 .implicit_value(true)
                 .help("disable PostgreSQL consumer");
         program.add_argument("-v", "--verbose")
-                .default_value(Config::DefaultVerboseFlag)
+                .default_value(ConfigOld::DefaultVerboseFlag)
                 .implicit_value(true)
                 .help("enables verbose");
 
@@ -28,7 +28,7 @@ namespace {
 
 }
 
-ArgParseConfig::ArgParseConfig(int argc, char **argv) {
+ArgParseConfigOld::ArgParseConfigOld(int argc, char **argv) {
     argparse::ArgumentParser program(AppName);
     parse_arguments(program, argc, argv);
 

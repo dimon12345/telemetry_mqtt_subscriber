@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "app/ArgParseConfig.h"
+#include "app/ArgParseConfigOld.h"
 #include "app/SignalManager.h"
 #include "mqtt/MqttSubscriber.h"
 #include "mqtt/consumers/ConsoleOutputConsumer.h"
@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv) {
     try {
-        ArgParseConfig config(argc, argv);
+        ArgParseConfigOld config(argc, argv);
 
         std::cout << "Connect to MQTT server..." << std::endl;
         MqttSubscriber mqtt_subscriber(config);

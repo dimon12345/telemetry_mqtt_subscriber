@@ -37,7 +37,7 @@ set(COMMON_HEADERS
 
 add_executable(mqtt_subscriber
     src/main.cpp
-    src/app/ArgParseConfig.cpp
+    src/app/ArgParseConfigOld.cpp
     ${COMMON_SOURCES}
 )
 

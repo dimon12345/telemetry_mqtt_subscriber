@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
 
-#include "Config.h"
+#include "ConfigOld.h"
 #include "PostgreSqlConsumer.h"
 
-PostgreSqlConsumer::PostgreSqlConsumer(const Config &config) : config_(config) {
+PostgreSqlConsumer::PostgreSqlConsumer(const ConfigOld &config) : config_(config) {
     createConnection();
     checkTables();
 }
