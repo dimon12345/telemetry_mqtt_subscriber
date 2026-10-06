@@ -19,6 +19,8 @@ FetchContent_Declare(
 )
 
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(google_benchmark)
 
 set(COMMON_SOURCES

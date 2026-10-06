@@ -15,7 +15,3 @@ else
 fi
 
 cmake --build build -v
-
-if [ -z "$DISABLE_BENCHMARK_TEST" ] || [ "$DISABLE_BENCHMARK_TEST" == "0" ]; then
-    build/bench || true
-fi
