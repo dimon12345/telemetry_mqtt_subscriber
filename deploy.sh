@@ -5,8 +5,7 @@ echo "Deploy MQTT subscriber"
 cd "$(dirname "$(readlink -f "$0")")"
 
 ./build.sh
-
-sudo -u postgres psql -U postgres -d telemetry -f deploy/pgsql/init_db.sql
+deploy/pgsql/init_db.sh
 
 SERVICE_NAME="telemetry_mqtt.service"
 SERVICE_ETC_FILENAME="/etc/systemd/system/$SERVICE_NAME"

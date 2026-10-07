@@ -17,3 +17,6 @@ CREATE TABLE IF NOT EXISTS measurements (
 );
 
 CREATE INDEX IF NOT EXISTS idx_measurements_timestamp ON measurements(timestamp);
+
+GRANT INSERT ON TABLE measurements TO lexx;
+GRANT SELECT, INSERT ON TABLE sensors TO lexx;
