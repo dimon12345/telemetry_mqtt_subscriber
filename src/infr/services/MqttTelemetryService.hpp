@@ -17,7 +17,7 @@ namespace Telemetry::Infrastructure {
 
 class MqttTelemetryService : public mqtt::callback {
 public:
-    explicit MqttTelemetryService(std::shared_ptr <ISensorValueService> service)
+    explicit MqttTelemetryService(std::shared_ptr<ISensorValueService> service)
             : sensor_value_service_(std::move(service)) {
     }
 
@@ -28,7 +28,6 @@ public:
     void start() {
         if (!is_running_.exchange(true)) {
             worker_thread_ = std::thread(&MqttTelemetryService::processQueueLoop, this);
-            std::cout << "[MqttTelemetryService] Worker thread started." << std::endl;
         }
     }
 
@@ -59,7 +58,6 @@ private:
             }
             processSingleMessage(std::move(msg_opt.value()));
         }
-        std::cout << "[MqttTelemetryService] Worker thread stopped safely." << std::endl;
     }
 
     void processSingleMessage(mqtt::const_message_ptr msg) {

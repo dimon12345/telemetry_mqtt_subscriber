@@ -18,15 +18,15 @@ public:
 struct SensorMeasurement {
     int sensor_id;
     float value;
-    std::chrono::system_clock::time_point timestamp;
+    std::string timestamp; // ISO 8601
 };
 
 class ISensorRepository {
 public:
-    virtual std::optional<int> getIdByName(const std::string &name);
-    virtual int addName(const std::string &name);
+    virtual std::optional<int> getIdByName(const std::string &name) = 0;
+    virtual int addSensor(const std::string &name) = 0;
 
-    virtual void addMeasurement(const SensorMeasurement &measurement);
+    virtual void addMeasurement(const SensorMeasurement &measurement) = 0;
 };
 
 } // namespace Telemetry::Domain

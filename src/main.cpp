@@ -1,28 +1,41 @@
+#include <algorithm>
 #include <iostream>
 #include <memory>
 
-//#include <mqtt/callback.h>
 #include <mqtt/async_client.h>
 
 #include "app/ArgParseConfig.hpp"
 #include "app/SignalManager.hpp"
 #include "core/Sensors.hpp"
-
 #include "infr/services/MqttTelemetryService.hpp"
+#include "infr/services/SensorValueService.hpp"
 
 using namespace Telemetry::Domain;
 using namespace Telemetry::Infrastructure;
 
 namespace {
+    class MockSensorRepository : public ISensorRepository {
+    public:
+        std::optional<int> getIdByName(const std::string &name) override {
+            if (!sensor_added_) {
+                return std::nullopt;
+            }
+            return 10;
+        }
 
-class MockSensorValueService : public ISensorValueService {
-public:
-    void save(const SensorValue& value) override {
-        std::cout << "-----> save sensor value:" << std::endl <<
-                     "sensor_name: " << value.name << std::endl <<
-                     "value: " << value.value << std::endl;
-    }
-};
+        int addSensor(const std::string &name) override {
+            return 10;
+        }
+
+        void addMeasurement(const SensorMeasurement &measurement) override {
+            std::cout << "-----> measurement added:" << std::endl <<
+                         "sensor_id: " << measurement.sensor_id << std::endl <<
+                         "value: " << measurement.value << std::endl <<
+                         "timestamp: " << measurement.timestamp << std::endl;
+        }
+    private:
+        bool sensor_added_ = false;
+    };
 
 } // namespace
 
@@ -34,9 +47,9 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        std::cout << "Initializing system modules..." << std::endl;
-        auto sensor_value_service = std::make_shared<MockSensorValueService>();
-        auto mqtt_telemetry_service = std::make_shared<MqttTelemetryService>(sensor_value_service);
+        auto sensor_repository = std::make_shared<MockSensorRepository>();
+        auto sensor_value_service = std::make_shared<SensorValueService>(std::move(sensor_repository));
+        auto mqtt_telemetry_service = std::make_shared<MqttTelemetryService>(std::move(sensor_value_service));
 
         const auto &mqtt_config = config.getMqttConfig();
 
