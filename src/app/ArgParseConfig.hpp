@@ -8,4 +8,5 @@ public:
 
 private:
     bool saveDefaultConfig(const std::string& path);
+    void loadSecuredValues();
 };

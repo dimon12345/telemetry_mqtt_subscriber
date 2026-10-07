@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "app/ArgParseConfigOld.h"
-#include "app/SignalManager.h"
+#include "app/SignalManager.hpp"
 #include "mqtt/MqttSubscriber.h"
 #include "mqtt/consumers/ConsoleOutputConsumer.h"
 #include "mqtt/consumers/PostgreSqlConsumer.h"

@@ -1,4 +1,4 @@
-#include "SignalManager.h"
+#include "SignalManager.hpp"
 
 #include <atomic>
 #include <chrono>

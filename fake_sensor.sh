@@ -12,7 +12,7 @@ while true; do
     }')
 
     echo "send fake_sensor value $VALUE_T"
-    mosquitto_pub -h mqtt-host -p 1883 -u "lexx" -P "xev" -t "fake_telemetry" -m "fake_sensor $VALUE_T"
+    mosquitto_pub -h mqtt-host -p 1883 -u "lexx" -P "xev" -t "house/office/fake_sensor" -m "$VALUE_T"
 
     sleep 60
 done
