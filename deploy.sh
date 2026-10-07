@@ -6,7 +6,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 ./build.sh
 
-sudo -u postgres psql -U postgres -d telemetry -f deploy/pgsqlinit_db.sql
+sudo -u postgres psql -U postgres -d telemetry -f deploy/pgsql/init_db.sql
 
 SERVICE_NAME="telemetry_mqtt.service"
 SERVICE_ETC_FILENAME="/etc/systemd/system/$SERVICE_NAME"
