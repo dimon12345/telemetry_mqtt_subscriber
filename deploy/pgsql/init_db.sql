@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS measurements (
     value REAL NOT NULL,
     timestamp TIMESTAMPTZ NOT NULL,
 
-    -- Внешний ключ, связывающий измерение с датчиком
     CONSTRAINT fk_sensor
         FOREIGN KEY(sensor_id)
         REFERENCES sensors(id)
@@ -18,5 +17,7 @@ CREATE TABLE IF NOT EXISTS measurements (
 
 CREATE INDEX IF NOT EXISTS idx_measurements_timestamp ON measurements(timestamp);
 
-GRANT INSERT ON TABLE measurements TO lexx;
-GRANT SELECT, INSERT ON TABLE sensors TO lexx;
+GRANT INSERT ON TABLE measurements TO :"app_user";
+GRANT USAGE, SELECT ON SEQUENCE measurements_id_seq TO :"app_user";
+GRANT SELECT, INSERT ON TABLE sensors TO :"app_user";
+GRANT USAGE, SELECT ON SEQUENCE sensors_id_seq TO :"app_user";

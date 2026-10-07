@@ -88,13 +88,13 @@ void ArgParseConfig::loadSecuredValues() {
         mqtt_config_.password = mqtt_password;
     }
 
-    auto pg_user = get_env_var("PG_USER");
+    auto pg_user = get_env_var("POSTGRES_USER");
     if (!pg_user.empty()) {
-        mqtt_config_.user = pg_user;
+        pg_config_.user = pg_user;
     }
-    auto pg_password = get_env_var("PG_PASSWORD");
+    auto pg_password = get_env_var("POSTGRES_PASSWORD");
     if (!pg_password.empty()) {
-        mqtt_config_.password = pg_password;
+        pg_config_.password = pg_password;
     }
 }
 

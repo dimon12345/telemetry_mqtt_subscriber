@@ -6,10 +6,11 @@
 #include "core/Sensors.hpp"
 
 using namespace Telemetry::Common;
+using namespace Telemetry::Domain;
 
 namespace Telemetry::Infrastructure {
 
-class SensorValueService : public Telemetry::Domain::ISensorValueService {
+class SensorValueService : public ISensorValueService {
 public:
     SensorValueService(std::shared_ptr<Telemetry::Domain::ISensorRepository> repository)
             : repository_(std::move(repository)) {

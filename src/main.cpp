@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <iostream>
 #include <memory>
 
@@ -7,37 +6,13 @@
 #include "app/ArgParseConfig.hpp"
 #include "app/SignalManager.hpp"
 #include "core/Sensors.hpp"
+#include "infr/database/PqxxSensorRepository.hpp"
 #include "infr/services/MqttTelemetryService.hpp"
 #include "infr/services/SensorValueService.hpp"
 
+
 using namespace Telemetry::Domain;
 using namespace Telemetry::Infrastructure;
-
-namespace {
-    class MockSensorRepository : public ISensorRepository {
-    public:
-        std::optional<int> getSensorIdByName(const std::string &name) override {
-            if (!sensor_added_) {
-                return std::nullopt;
-            }
-            return 10;
-        }
-
-        int addSensor(const std::string &name) override {
-            return 10;
-        }
-
-        void addMeasurement(const SensorMeasurement &measurement) override {
-            std::cout << "-----> measurement added:" << std::endl <<
-                         "sensor_id: " << measurement.sensor_id << std::endl <<
-                         "value: " << measurement.value << std::endl <<
-                         "timestamp: " << measurement.timestamp << std::endl;
-        }
-    private:
-        bool sensor_added_ = false;
-    };
-
-} // namespace
 
 int main(int argc, char* argv[]) {
     ArgParseConfig config;
@@ -47,7 +22,10 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        auto sensor_repository = std::make_shared<MockSensorRepository>();
+        const auto &postgres_config = config.getPostgres();
+        auto connection_string = postgres_config.toConnectionString();
+        auto connection = std::make_unique<pqxx::connection>(connection_string);
+        auto sensor_repository = std::make_shared<PqxxSensorRepository>(std::move(connection));
         auto sensor_value_service = std::make_shared<SensorValueService>(std::move(sensor_repository));
         auto mqtt_telemetry_service = std::make_shared<MqttTelemetryService>(std::move(sensor_value_service));
 

@@ -16,7 +16,7 @@ public:
 };
 
 struct SensorMeasurement {
-    int sensor_id;
+    int64_t sensor_id;
     float value;
     std::string timestamp; // ISO 8601
 };
