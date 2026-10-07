@@ -23,7 +23,7 @@ struct SensorMeasurement {
 
 class ISensorRepository {
 public:
-    virtual std::optional<int> getIdByName(const std::string &name) = 0;
+    virtual std::optional<int> getSensorIdByName(const std::string &name) = 0;
     virtual int addSensor(const std::string &name) = 0;
 
     virtual void addMeasurement(const SensorMeasurement &measurement) = 0;

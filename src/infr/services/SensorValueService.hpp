@@ -19,11 +19,16 @@ public:
         int sensor_id = -1;
         auto iter = sensor_ids_.find(value.name);
         if (iter == sensor_ids_.end()) {
-            sensor_id = repository_->addSensor(value.name);
+            auto sensor_id_value = repository_->getSensorIdByName(value.name);
+            if (sensor_id_value.has_value()) {
+                sensor_id = sensor_id_value.value();
+            } else {
+                sensor_id = repository_->addSensor(value.name);
+                sensor_ids_[value.name] = sensor_id;
+            }
         } else {
             sensor_id = iter->second;
         }
-
         auto current_time = std::chrono::system_clock::now();
         auto timestamp = to_iso8601(current_time);
 

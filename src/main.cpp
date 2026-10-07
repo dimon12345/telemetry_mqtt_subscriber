@@ -16,7 +16,7 @@ using namespace Telemetry::Infrastructure;
 namespace {
     class MockSensorRepository : public ISensorRepository {
     public:
-        std::optional<int> getIdByName(const std::string &name) override {
+        std::optional<int> getSensorIdByName(const std::string &name) override {
             if (!sensor_added_) {
                 return std::nullopt;
             }
