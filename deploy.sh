@@ -4,12 +4,14 @@ set -ex
 echo "Deploy MQTT subscriber"
 cd "$(dirname "$(readlink -f "$0")")"
 
-DISABLE_BENCHMARK_TEST=1 DISABLE_START_SUBSCRIBER=1 ./build.sh
+./build.sh
+
+sudo -u postgres psql -U postgres -d telemetry -f deploy/pgsqlinit_db.sql
 
 SERVICE_NAME="telemetry_mqtt.service"
 SERVICE_ETC_FILENAME="/etc/systemd/system/$SERVICE_NAME"
 
-sudo cp "systemd/$SERVICE_NAME" "$SERVICE_ETC_FILENAME"
+sudo cp "deploy/systemd/$SERVICE_NAME" "$SERVICE_ETC_FILENAME"
 sudo chmod 644 "$SERVICE_ETC_FILENAME"
 
 sudo systemctl daemon-reload
