@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS measurements (
 
 CREATE INDEX IF NOT EXISTS idx_measurements_timestamp ON measurements(timestamp);
 
-GRANT INSERT ON TABLE measurements TO :"app_user";
-GRANT USAGE, SELECT ON SEQUENCE measurements_id_seq TO :"app_user";
-GRANT SELECT, INSERT ON TABLE sensors TO :"app_user";
-GRANT USAGE, SELECT ON SEQUENCE sensors_id_seq TO :"app_user";
+GRANT SELECT, INSERT, TRUNCATE ON TABLE measurements TO telemetry;
+GRANT USAGE, SELECT ON SEQUENCE measurements_id_seq TO telemetry;
+GRANT SELECT, INSERT ON TABLE sensors TO telemetry;
+GRANT USAGE, SELECT ON SEQUENCE sensors_id_seq TO telemetry;

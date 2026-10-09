@@ -66,12 +66,14 @@ private:
             const std::string &payload = msg->get_payload_str();
 
             std::string sensor_name = parseSensorName(topic);
+
             float temperature = 0.0;
             std::stringstream ss(payload);
             if (!(ss >> temperature)) {
                 std::cerr << "[Worker] Parsing error: '" << payload << "' on " << topic << std::endl;
                 return;
             }
+
             sensor_value_service_->save(SensorValue{std::move(sensor_name), temperature});
         } catch (const std::exception &e) {
             std::cerr << "[Worker] Error processing message: " << e.what() << std::endl;

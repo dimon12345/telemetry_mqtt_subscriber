@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+#set -ex
 
 while true; do
     CURRENT_TIME=$(date +"%H %M %S" | awk '{print $1 + $2/60 + $3/3600}')
@@ -12,7 +14,7 @@ while true; do
     }')
 
     echo "send fake_sensor value $VALUE_T"
-    mosquitto_pub -h mqtt-host -p 1883 -u "lexx" -P "xev" -t "house/office/fake_sensor" -m "$VALUE_T"
+    mosquitto_pub -h localhost -p 1883 -u "telemetry" -P "telemetry" -t "house/office/fake_sensor" -m "$VALUE_T"
 
     sleep 60
 done

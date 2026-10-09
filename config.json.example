@@ -1,10 +1,17 @@
 {
     "mqtt": {
-        "hostname": "mqtt-host",
+        "client_id": "mqtt_subscriber",
+        "server_uri": "tcp://mqtt_broker:1883",
+        "password": "",
         "port": 1883,
-        "topic": "telemetry"
+        "topic": "house/#",
+        "user": "postgres"
     },
-    "pg": {
-        "hostname": "pg-host"
+    "postgres": {
+        "dbname": "telemetry",
+        "host": "postgres_server",
+        "password": "telemetry",
+        "port": 5432,
+        "user": "telemetry"
     }
 }

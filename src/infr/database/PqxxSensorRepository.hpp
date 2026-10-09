@@ -20,7 +20,7 @@ public:
     }
 
     std::optional<int> getSensorIdByName(const std::string &name) override {
-        pqxx::work txn(*connection_);
+        pqxx::nontransaction txn(*connection_);
         pqxx::result r = txn.exec_prepared("find_sensor_id", name);
         if (r.empty()) {
             return std::nullopt;

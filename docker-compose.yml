@@ -1,0 +1,54 @@
+services:
+  mqtt_broker:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    environment:
+      MQTT_USER: ${MQTT_USER}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  postgres_server:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: telemetry
+    volumes:
+      - ./db/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+      - ./db/init-scripts:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telemetry -d telemetry"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mqtt_subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mqtt_subscriber
+    environment:
+      - MQTT_HOST=${MQTT_HOST}
+      - MQTT_USER=${MQTT_USER}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      mqtt_broker:
+        condition: service_started
+      postgres_server:
+        condition: service_healthy
+
+volumes:
+  pgdata:

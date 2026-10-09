@@ -36,6 +36,7 @@ bool ArgParseConfig::loadFromArgs(int argc, char* argv[]) {
     if (!fs::exists(config_path)) {
         std::cout << "Config '" << config_path << "' not found.\n";
         if (saveDefaultConfig(config_path)) {
+            loadSecuredValues();
             return true;
         } else {
             std::cerr << "Default config '"+ config_path + "' save failed\n";
@@ -73,7 +74,7 @@ bool ArgParseConfig::loadFromArgs(int argc, char* argv[]) {
         std::cerr << "Parse JSON Error (" << config_path << "): " << e.what() << "\n";
         return false;
     } catch (const std::exception& e) {
-        std::cerr << "Read config file Error: " << e.what() << "\n";
+        std::cerr << "Read config file error: " << e.what() << "\n";
         return false;
     }
 }
@@ -123,7 +124,7 @@ bool ArgParseConfig::saveDefaultConfig(const std::string& path) {
         }
 
         config_file << config_json.dump(4);
-        std::cout << "Default config saved. Edit file config.json\n";
+        std::cout << "Default config saved. Please, edit file config.json\n";
         return true;
     } catch (const std::exception& e) {
         std::cerr << "Error: Can't save config file: " << e.what() << "\n";
