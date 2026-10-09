@@ -1,5 +1,5 @@
-Telemetry MQTT subscriber microservice
-======================================
+Telemetry MQTT subscriber
+=========================
 
 
 Telemetry project root: https://github.com/dimon12345/telemetry
