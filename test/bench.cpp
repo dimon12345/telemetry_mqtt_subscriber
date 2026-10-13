@@ -9,10 +9,10 @@
 #include <pqxx/pqxx>
 
 #include "Config.hpp"
-#include "core/Sensors.hpp"
-#include "infr/database/PqxxSensorRepository.hpp"
-#include "infr/services/MqttTelemetryService.hpp"
-#include "infr/services/SensorValueService.hpp"
+#include "core/TelemetryMessage.hpp"
+#include "infr/repos/PostgresTelemetryRepository.hpp"
+#include "infr/MqttListener.hpp"
+#include "infr/MqttProcessor.hpp"
 
 using namespace Telemetry::Infrastructure;
 
@@ -26,13 +26,13 @@ namespace {
 
     long long get_db_row_count(pqxx::connection& conn) {
         pqxx::nontransaction tx(conn);
-        pqxx::result res = tx.exec("SELECT COUNT(*) FROM measurements;");
+        pqxx::result res = tx.exec("SELECT COUNT(*) FROM telemetry;");
         return res[0][0].as<long long>();
     }
 
     void clear_db(pqxx::connection& conn) {
         pqxx::work tx(conn);
-        tx.exec("TRUNCATE TABLE measurements;");
+        tx.exec("TRUNCATE TABLE telemetry;");
         tx.commit();
     }
 } // namespace
@@ -60,58 +60,46 @@ public:
     BenchConfig config_;
 
     void SetUp(const ::benchmark::State& state) override {
-        const auto &postgres_config = config_.getPostgres();
+        auto &postgres_config = config_.getPostgresConfig();
         auto db_connection_string = postgres_config.toConnectionString();
-        std::cout << "connection string: " << db_connection_string << std::endl;
 
-        auto connection = std::make_shared<pqxx::connection>(db_connection_string);
-        auto sensor_repository = std::make_shared<PqxxSensorRepository>(std::move(connection));
-        auto sensor_value_service = std::make_shared<SensorValueService>(std::move(sensor_repository));
-        mqtt_telemetry_service_ = std::make_shared<MqttTelemetryService>(std::move(sensor_value_service));
+        std::shared_ptr<Telemetry::Domain::ITelemetryRepository> repository =
+                std::make_shared<Telemetry::Infrastructure::PostgresTelemetryRepository>(db_connection_string);
 
-        mqtt_telemetry_service_->start();
+        processor_ = std::make_shared<Telemetry::Infrastructure::MqttProcessor>(std::move(repository));
+        processor_->start();
 
-        const auto &mqtt_config = config_.getMqttConfig();
-        mqtt_client_ = std::make_shared<mqtt::async_client>(mqtt_config.server_uri, mqtt_config.client_id);
-        mqtt_client_->set_callback(*mqtt_telemetry_service_);
+        auto &mqtt_config = config_.getMqttConfig();
+        listener_ = std::make_shared<MqttListener>(processor_, mqtt_config);
+        listener_->connect();
 
+        mqtt_client_ = std::make_shared<mqtt::async_client>(mqtt_config.server_uri, "benchmark_publisher");
         mqtt::connect_options conn_opts;
         conn_opts.set_keep_alive_interval(20);
         conn_opts.set_clean_session(true);
         conn_opts.set_automatic_reconnect(true);
-        conn_opts.set_user_name(mqtt_config.user);
-        conn_opts.set_password(mqtt_config.password);
 
+        conn_opts.set_user_name(get_env_var("MQTT_USER"));
+        conn_opts.set_password(get_env_var("MQTT_PASSWORD"));
         mqtt_client_->connect(conn_opts)->wait();
 
-        constexpr int QOS = 1;
-        mqtt_client_->subscribe(mqtt_config.topic, QOS)->wait();
 
         test_postgres_connection_ = std::make_shared<pqxx::connection>(db_connection_string);
         clear_db(*test_postgres_connection_);
     }
 
     void TearDown(const ::benchmark::State& state) override {
-        mqtt_telemetry_service_->stop();
-    }
-
-    ~MqttSingleConnFixture() {
-        if (mqtt_client_ && mqtt_client_->is_connected()) {
-            try {
-                mqtt_client_->disconnect()->wait();
-                std::cout << "disconnected from mqtt" << std::endl;
-                mqtt_client_.reset();
-            } catch (...) {
-            }
-        }
+        mqtt_client_->disconnect()->wait();
+        listener_->disconnect();
+        processor_->stop();
     }
 
 private:
-    std::shared_ptr<MqttTelemetryService> mqtt_telemetry_service_;
+    std::shared_ptr<Telemetry::Infrastructure::MqttListener> listener_;
+    std::shared_ptr<Telemetry::Infrastructure::MqttProcessor> processor_;
 };
 
 BENCHMARK_DEFINE_F(MqttSingleConnFixture, SendViaSingleConnection)(benchmark::State& state) {
-    std::cout << "start test" << std::endl;
     const int num_messages = state.range(0);
     const auto &topic = config_.getMqttConfig().topic;
 
@@ -137,6 +125,6 @@ BENCHMARK_DEFINE_F(MqttSingleConnFixture, SendViaSingleConnection)(benchmark::St
 BENCHMARK_REGISTER_F(MqttSingleConnFixture, SendViaSingleConnection)
     ->Arg(10)
     ->Unit(benchmark::kMillisecond)
-    ->Iterations(5);
+    ->Iterations(100);
 
 BENCHMARK_MAIN();

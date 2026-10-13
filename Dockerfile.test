@@ -16,6 +16,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /telemetry
 COPY . .
 
-RUN mkdir build && cmake -DBUILD_ENABLE_GOOGLE_BENCHMARK=ON -B build && cmake --build build
+RUN mkdir build_docker && cmake -DBUILD_ENABLE_GOOGLE_BENCHMARK=ON -B build_docker && cmake --build build_docker
 
-CMD sh -c "./build/bench"
+CMD sh -c "./build_docker/bench"

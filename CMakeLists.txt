@@ -35,6 +35,12 @@ set(COMMON_HEADERS
     ${PostgreSQL_INCLUDE_DIRS}
 )
 
+set(COMMON_SOURCES
+    src/infr/MqttListener.cpp
+    src/infr/MqttProcessor.cpp
+    src/infr/repos/PostgresTelemetryRepository.cpp
+)
+
 add_executable(mqtt_subscriber
     src/main.cpp
     src/app/ArgParseConfig.cpp
@@ -55,6 +61,7 @@ if (BUILD_ENABLE_GOOGLE_BENCHMARK)
 
     add_executable(bench
         test/bench.cpp
+        ${COMMON_SOURCES}
     )
 
     target_link_libraries(bench PRIVATE benchmark::benchmark_main)

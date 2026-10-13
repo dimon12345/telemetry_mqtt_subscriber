@@ -4,9 +4,9 @@
 
 class ArgParseConfig : public Config {
 public:
-    bool loadFromArgs(int argc, char* argv[]);
+    ArgParseConfig(int argc, char* argv[]);
 
 private:
-    bool saveDefaultConfig(const std::string& path);
+    bool saveConfig(const std::string& path);
     void loadSecuredValues();
 };

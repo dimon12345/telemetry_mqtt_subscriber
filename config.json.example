@@ -2,10 +2,10 @@
     "mqtt": {
         "client_id": "mqtt_subscriber",
         "server_uri": "tcp://mqtt_broker:1883",
-        "password": "",
+        "password": "telemetry",
         "port": 1883,
         "topic": "house/#",
-        "user": "postgres"
+        "user": "telemetry"
     },
     "postgres": {
         "dbname": "telemetry",

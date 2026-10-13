@@ -14,6 +14,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /telemetry
 COPY . .
 
-RUN mkdir build && cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
+RUN mkdir docker_build && cmake -B docker_build -DCMAKE_BUILD_TYPE=Release && cmake --build docker_build
 
-CMD sh -c "./build/mqtt_subscriber"
+CMD sh -c "./docker_build/mqtt_subscriber"

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS sensors (
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS measurements (
+CREATE TABLE IF NOT EXISTS telemetry (
     id BIGSERIAL PRIMARY KEY,
     sensor_id BIGINT NOT NULL,
     value REAL NOT NULL,
@@ -15,9 +15,8 @@ CREATE TABLE IF NOT EXISTS measurements (
         ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_measurements_timestamp ON measurements(timestamp);
-
-GRANT SELECT, INSERT ON TABLE measurements TO telemetry;
-GRANT USAGE, SELECT ON SEQUENCE measurements_id_seq TO telemetry;
+GRANT SELECT, INSERT ON TABLE telemetry TO telemetry;
+GRANT USAGE, SELECT ON SEQUENCE telemetry_id_seq TO telemetry;
 GRANT SELECT, INSERT ON TABLE sensors TO telemetry;
 GRANT USAGE, SELECT ON SEQUENCE sensors_id_seq TO telemetry;
+
