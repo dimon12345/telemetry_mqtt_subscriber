@@ -45,9 +45,15 @@ void MqttListener::disconnect() {
 
 void MqttListener::message_arrived(mqtt::const_message_ptr msg) {
     std::string name = getSensorName(msg->get_topic());
-    float value = std::stof(msg->to_string());
-    auto now = std::chrono::system_clock::now();
-    processor_->pushMessage(TelemetryMessage{name, value, now});
+    try {
+        float value = std::stof(msg->to_string());
+        auto now = std::chrono::system_clock::now();
+        processor_->pushMessage(TelemetryMessage{name, value, now});
+    } catch (const std::invalid_argument &e) {
+        std::cerr << "Invalid argument. Skip mqtt message '" << msg->to_string() <<
+                "' and topic '" << msg->get_topic() << "'" << std::endl;
+        return;
+    }
 }
 
 } // namespace Telemetry::Infrastructure
