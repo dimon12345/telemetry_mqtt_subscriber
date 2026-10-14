@@ -51,7 +51,8 @@ void MqttListener::message_arrived(mqtt::const_message_ptr msg) {
         processor_->pushMessage(TelemetryMessage{name, value, now});
     } catch (const std::invalid_argument &e) {
         std::cerr << "Invalid argument. Skip mqtt message '" << msg->to_string() <<
-                "' and topic '" << msg->get_topic() << "'" << std::endl;
+                "' and topic '" << msg->get_topic() << "' and name '" << name <<
+                "'" << std::endl;
         return;
     }
 }
