@@ -21,6 +21,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: telemetry
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
     volumes:
       - ./db/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
       - ./db/init-scripts:/docker-entrypoint-initdb.d
