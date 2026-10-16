@@ -19,4 +19,3 @@ GRANT SELECT, INSERT ON TABLE telemetry TO telemetry;
 GRANT USAGE, SELECT ON SEQUENCE telemetry_id_seq TO telemetry;
 GRANT SELECT, INSERT ON TABLE sensors TO telemetry;
 GRANT USAGE, SELECT ON SEQUENCE sensors_id_seq TO telemetry;
-
