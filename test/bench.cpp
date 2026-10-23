@@ -40,7 +40,7 @@ namespace {
 class BenchConfig : public Config {
 public:
     BenchConfig() {
-        mqtt_config_.topic = "house/benchmark_test";
+        mqtt_config_.topic = "home/benchmark_test/state";
         mqtt_config_.client_id = "benchmark_subscriber";
         mqtt_config_.server_uri = "tcp://" + get_env_var("MQTT_HOST") + ":1883";
         mqtt_config_.user = get_env_var("MQTT_USER");

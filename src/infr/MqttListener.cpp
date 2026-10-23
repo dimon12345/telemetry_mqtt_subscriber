@@ -9,10 +9,21 @@ using json = nlohmann::json;
 namespace {
     std::string getSensorName(std::string_view topic) {
         size_t last_slash = topic.find_last_of('/');
-        if (last_slash != std::string_view::npos && last_slash < topic.length() - 1) {
-            return std::string(topic.substr(last_slash + 1));
+        if (last_slash == std::string_view::npos) {
+            return std::string(topic);
         }
-        return std::string(topic);
+        std::string_view state = topic.substr(last_slash + 1);
+        if (state != "state") {
+            return std::string(state);
+        }
+
+        size_t name_slash = topic.substr(0, last_slash).find_last_of('/');
+        if (name_slash == std::string_view::npos) {
+            return std::string(state);
+        }
+
+        std::string_view name = topic.substr(name_slash + 1, last_slash - name_slash -1);
+        return std::string(name);
     }
 }
 
