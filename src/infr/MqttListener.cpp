@@ -1,6 +1,10 @@
+#include "MqttListener.hpp"
+
 #include <mqtt/async_client.h>
 
-#include "MqttListener.hpp"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace {
     std::string getSensorName(std::string_view topic) {
@@ -46,14 +50,33 @@ void MqttListener::disconnect() {
 void MqttListener::message_arrived(mqtt::const_message_ptr msg) {
     std::string name = getSensorName(msg->get_topic());
     try {
-        float value = std::stof(msg->to_string());
+        float value = parseTemperature(msg);
         auto now = std::chrono::system_clock::now();
         processor_->pushMessage(TelemetryMessage{name, value, now});
     } catch (const std::invalid_argument &e) {
-        std::cerr << "Invalid argument. Skip mqtt message '" << msg->to_string() <<
+        std::cerr << "Parse error. Skip mqtt message '" << msg->to_string() <<
                 "' and topic '" << msg->get_topic() << "' and name '" << name <<
                 "'" << std::endl;
-        return;
+    }
+}
+
+float MqttListener::parseTemperature(mqtt::const_message_ptr msg) {
+    auto payload = msg->get_payload();
+
+    try {
+        json data = json::parse(payload.begin(), payload.end());
+        auto it = data.find("temperature");
+        if (it == data.end()) {
+            throw std::invalid_argument("temperature field not found");
+        }
+
+        if (!it->is_number()) {
+            throw std::invalid_argument("temperature field is not number");
+        }
+
+        return it->get<double>();
+    } catch (const json::parse_error& e) {
+        throw std::invalid_argument(std::string("Parsing error: ") + e.what());
     }
 }
 

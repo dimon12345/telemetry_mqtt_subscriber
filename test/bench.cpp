@@ -108,7 +108,7 @@ BENCHMARK_DEFINE_F(MqttSingleConnFixture, SendViaSingleConnection)(benchmark::St
         long long expected_count = start_count + num_messages;
 
         for (int i = 0; i < num_messages; ++i) {
-            std::string payload = "0";
+            std::string payload = "{\"temperature\":0}";
             constexpr int QOS = 1;
             mqtt_client_->publish(topic, payload, QOS, false);
         }

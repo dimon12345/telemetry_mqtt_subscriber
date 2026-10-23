@@ -69,6 +69,7 @@ if (BUILD_ENABLE_GOOGLE_BENCHMARK)
     target_link_libraries(bench PRIVATE PahoMqttCpp::paho-mqttpp3)
 
     target_include_directories(bench PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/include
         ${COMMON_HEADERS}
     )
 endif()

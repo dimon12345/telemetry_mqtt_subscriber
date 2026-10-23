@@ -24,6 +24,8 @@ private:
     std::shared_ptr<MqttProcessor> processor_;
     const MqttConfig &config_;
     std::unique_ptr<mqtt::async_client> mqtt_client_;
+
+    float parseTemperature(mqtt::const_message_ptr msg);
 };
 
 } // namespace Telemetry::Infrastructure
