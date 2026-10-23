@@ -4,7 +4,7 @@
         "server_uri": "tcp://mqtt_broker:1883",
         "password": "telemetry",
         "port": 1883,
-        "topic": "/house/#",
+        "topic": "house/#",
         "user": "telemetry"
     },
     "postgres": {
