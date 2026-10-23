@@ -13,8 +13,8 @@ while true; do
         printf "%.2f", val
     }')
 
-    echo "send fake_sensor value $VALUE_T"
-    mosquitto_pub -h localhost -p 1883 -u "telemetry" -P "telemetry" -t "house/office/fake_sensor" -m "$VALUE_T"
+    echo "send fake_sensor temperature $VALUE_T"
+    mosquitto_pub -h localhost -p 1883 -u "telemetry" -P "telemetry" -t "/house/office/fake_sensor" -m '{"temperature":'"$VALUE_T"'}'
 
     sleep 60
 done

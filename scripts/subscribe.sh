@@ -2,4 +2,4 @@
 
 set -ex
 
-mosquitto_sub -L "mqtt://telemetry:telemetry@localhost:1883/house/#"
+mosquitto_sub -i subscribe_script -L "mqtt://telemetry:telemetry@localhost:1883//house/#"
