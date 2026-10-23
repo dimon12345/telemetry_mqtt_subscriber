@@ -12,9 +12,9 @@ find_package(PostgreSQL REQUIRED)
 
 pkg_check_modules(PQXX REQUIRED IMPORTED_TARGET libpqxx)
 
-option(BUILD_ENABLE_GOOGLE_BENCHMARK "Build with Google Benchmark test" OFF)
-
 if (BUILD_ENABLE_GOOGLE_BENCHMARK)
+    option(BUILD_ENABLE_GOOGLE_BENCHMARK "Build with Google Benchmark test" OFF)
+
     include(FetchContent)
     FetchContent_Declare(
         google_benchmark
